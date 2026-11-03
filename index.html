@@ -2,168 +2,207 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Tienda — Orbe C Films</title>
-<script src="./vendor/react.js"></script>
-<script src="./vendor/react-dom.js"></script>
-<script src="./support.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbe C Films — Tienda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0B0A; --panel: #151513; --line: #2A2925;
+    --text: #E8E4DA; --soft: #C9C4B8; --muted: #8F8A7E;
+    --lime: #C6FF3D; --orange: #FF5A1F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .display { font-family: Anton, Impact, sans-serif; font-weight: 400; text-transform: uppercase; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  button { font-family: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  .promo { background: var(--orange); color: var(--bg); text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { padding-top: 20px; padding-bottom: 20px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; }
+  .logo { font-size: 26px; letter-spacing: 2px; }
+  .cart-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+  main { display: flex; flex-wrap: wrap; gap: 48px; padding-top: 48px; padding-bottom: 96px; align-items: flex-start; }
+  .photo { flex: 1 1 420px; min-width: 0; aspect-ratio: 1 / 1; background: var(--panel); border: 1px solid var(--line); position: relative; display: flex; align-items: center; justify-content: center; }
+  .photo .badge { position: absolute; top: 16px; left: 16px; background: var(--orange); color: var(--bg); padding: 8px 14px; font-weight: 600; font-size: 14px; }
+  .photo .name { font-size: clamp(56px, 9vw, 120px); color: var(--line); }
+  .photo .ph { position: absolute; bottom: 16px; left: 16px; font-size: 12px; letter-spacing: 2px; color: var(--muted); }
+  .info { flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .stars { margin: 0; font-size: 13px; color: var(--lime); }
+  .info h1 { margin: 0; font-size: clamp(36px, 5vw, 56px); line-height: 1.05; }
+  .price-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .price-big { font-size: 88px; line-height: 1; color: var(--lime); }
+  .strike { font-size: 18px; color: var(--muted); text-decoration: line-through; }
+  .urgent { margin: 0; font-size: 14px; color: var(--orange); font-weight: 600; }
+  .info ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; color: var(--soft); }
+  .add-btn { min-height: 60px; border: none; background: var(--lime); color: var(--bg); font-size: 17px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .fine { margin: 0; font-size: 11px; color: var(--muted); }
+
+  .cart-main { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .cart-main h1 { margin: 0; font-size: 48px; line-height: 1; }
+  .item { border: 1px solid var(--line); padding: 20px; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+  .item .t { font-size: 16px; font-weight: 600; }
+  .item .s { font-size: 13px; color: var(--muted); }
+  .item .p { font-size: 28px; color: var(--lime); }
+  .extras h2 { margin: 0 0 12px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+  .extra { display: flex; gap: 14px; align-items: center; min-height: 52px; padding: 0 16px; border: 1px solid var(--line); cursor: pointer; font-size: 15px; margin-bottom: 12px; }
+  .extra input { width: 20px; height: 20px; accent-color: var(--lime); }
+  .extra span:first-of-type { flex: 1; }
+  .extra .x { color: var(--soft); }
+  .back-btn { align-self: flex-start; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 14px; }
+
+  aside { flex: 1 1 340px; min-width: 0; border: 2px solid var(--text); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  aside h2 { margin: 0; font-size: 28px; }
+  .line { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; line-height: 1.4; }
+  .line span:first-child { color: var(--soft); }
+  .line span:last-child { white-space: nowrap; }
+  .total { border-top: 1px dashed var(--line); padding-top: 14px; display: flex; justify-content: space-between; align-items: baseline; }
+  .total .lbl { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .total .amt { font-size: 48px; color: var(--orange); }
+  .pay-btn { min-height: 56px; border: none; background: var(--orange); color: var(--bg); font-size: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .paid { margin: 0; font-size: 14px; line-height: 1.6; color: var(--lime); }
+</style>
 </head>
 <body>
-<x-dc>
-<helmet>
-<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0;background:#0B0B0A}
-a{color:#E8E4DA}a:hover{color:#C6FF3D}
-</style>
-</helmet>
-<div style="background: #0B0B0A; color: #E8E4DA; font-family: 'JetBrains Mono', ui-monospace, monospace; min-height: 100vh">
 
-<div style="background: #FF5A1F; color: #0B0B0A; text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase">Oferta relámpago · termina en {{timer}} · {{viewers}} personas viendo esto</div>
+<div class="promo">Oferta relámpago · termina en <span id="timer">04:59</span> · <span id="viewers">37</span> personas viendo esto</div>
 
-<header style="border-bottom: 1px solid #2A2925">
-<div style="max-width: 1180px; margin: 0 auto; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center">
-<span style="font-family: Anton, Impact, sans-serif; font-size: 26px; letter-spacing: 2px; text-transform: uppercase">Orbe C Films</span>
-<button type="button" onClick="{{goCart}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border: 1px solid #2A2925; background: transparent; color: #E8E4DA; font-family: inherit; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer">
-<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
-Carrito ({{cartCount}})
-</button>
-</div>
+<header>
+  <div class="wrap">
+    <span class="logo display">Orbe C Films</span>
+    <button type="button" class="cart-btn" id="cartBtn">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+      Carrito (<span id="cartCount">0</span>)
+    </button>
+  </div>
 </header>
 
-<sc-if value="{{showProduct}}" hint-placeholder-val="{{ true }}">
-<main style="max-width: 1180px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-wrap: wrap; gap: 48px">
-<div style="flex: 1 1 420px; min-width: 0; aspect-ratio: 1 / 1; background: #151513; border: 1px solid #2A2925; position: relative; display: flex; align-items: center; justify-content: center">
-<span style="position: absolute; top: 16px; left: 16px; background: #FF5A1F; color: #0B0B0A; padding: 8px 14px; font-weight: 600; font-size: 14px">-100%</span>
-<span style="font-family: Anton, Impact, sans-serif; font-size: clamp(56px, 9vw, 120px); text-transform: uppercase; color: #2A2925">Spooky</span>
-<span style="position: absolute; bottom: 16px; left: 16px; font-size: 12px; letter-spacing: 2px; color: #8F8A7E">[FOTO DEL VIDEO]</span>
-</div>
-<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
-<p style="margin: 0; font-size: 13px; color: #C6FF3D">★★★★★ 4.9 · +1,284 vendidos · Envío gratis*</p>
-<h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: clamp(36px, 5vw, 56px); line-height: 1.05; text-transform: uppercase">Video musical profesional para Spooky — calidad de cine</h1>
-<div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap">
-<span style="font-family: Anton, Impact, sans-serif; font-size: 88px; line-height: 1; color: #C6FF3D">$0.00</span>
-<span style="font-size: 18px; color: #8F8A7E; text-decoration: line-through">$4,999.00</span>
-</div>
-<p style="margin: 0; font-size: 14px; color: #FF5A1F; font-weight: 600">¡Ahorras $4,999.00! Solo quedan 2 en stock.</p>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; color: #C9C4B8">
-<li>Dirección, grabación y edición por Orbe C Films</li>
-<li>Resolución en 4K (cuando hay luz)</li>
-<li>Sin costos ocultos*</li>
-</ul>
-<button type="button" onClick="{{add}}" style="min-height: 60px; border: none; background: #C6FF3D; color: #0B0B0A; font-family: inherit; font-size: 17px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer">Agregar al carrito — $0.00</button>
-<p style="margin: 0; font-size: 11px; color: #8F8A7E">*Aplican términos, condiciones, cargos, tarifas, impuestos y lo que se nos ocurra.</p>
-</div>
+<!-- PÁGINA DEL PRODUCTO -->
+<main class="wrap" id="productView">
+  <div class="photo">
+    <span class="badge">-100%</span>
+    <span class="name display">Spooky</span>
+    <span class="ph">[FOTO DEL VIDEO]</span>
+  </div>
+  <div class="info">
+    <p class="stars">★★★★★ 4.9 · +1,284 vendidos · Envío gratis*</p>
+    <h1 class="display">Video musical profesional para Spooky — calidad de cine</h1>
+    <div class="price-row">
+      <span class="price-big display">$0.00</span>
+      <span class="strike">$4,999.00</span>
+    </div>
+    <p class="urgent">¡Ahorras $4,999.00! Solo quedan 2 en stock.</p>
+    <ul>
+      <li>Dirección, grabación y edición por Orbe C Films</li>
+      <li>Resolución en 4K (cuando hay luz)</li>
+      <li>Sin costos ocultos*</li>
+    </ul>
+    <button type="button" class="add-btn" id="addBtn">Agregar al carrito — $0.00</button>
+    <p class="fine">*Aplican términos, condiciones, cargos, tarifas, impuestos y lo que se nos ocurra.</p>
+  </div>
 </main>
-</sc-if>
 
-<sc-if value="{{inCart}}" hint-placeholder-val="{{ false }}">
-<main style="max-width: 1180px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
-<div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
-<h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 48px; text-transform: uppercase; line-height: 1">Tu carrito</h1>
-<div style="border: 1px solid #2A2925; padding: 20px; display: flex; justify-content: space-between; gap: 16px; align-items: center">
-<div style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 16px; font-weight: 600">Video musical para Spooky</span>
-<span style="font-size: 13px; color: #8F8A7E">Orbe C Films · Cantidad: 1</span>
-</div>
-<span style="font-family: Anton, Impact, sans-serif; font-size: 28px; color: #C6FF3D">$0.00</span>
-</div>
+<!-- CARRITO -->
+<main class="wrap" id="cartView" hidden>
+  <div class="cart-main">
+    <h1 class="display">Tu carrito</h1>
+    <div class="item">
+      <div>
+        <div class="t">Video musical para Spooky</div>
+        <div class="s">Orbe C Films · Cantidad: 1</div>
+      </div>
+      <span class="p display">$0.00</span>
+    </div>
+    <div class="extras">
+      <h2>Extras recomendados para ti</h2>
+      <div id="extrasList"></div>
+    </div>
+    <button type="button" class="back-btn" id="backBtn">← Seguir comprando</button>
+  </div>
 
-<div style="display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #8F8A7E">Extras recomendados para ti</h2>
-<sc-for list="{{extras}}" as="ex" hint-placeholder-count="2">
-<label style="display: flex; gap: 14px; align-items: center; min-height: 52px; padding: 0 16px; border: 1px solid #2A2925; cursor: pointer; font-size: 15px">
-<input type="checkbox" checked="{{ex.checked}}" onChange="{{ex.toggle}}" style="width: 20px; height: 20px; accent-color: #C6FF3D">
-<span style="flex: 1">{{ex.label}}</span>
-<span style="color: #C9C4B8">{{ex.priceText}}</span>
-</label>
-</sc-for>
-</div>
-<button type="button" onClick="{{back}}" style="align-self: flex-start; min-height: 44px; padding: 0 16px; border: 1px solid #2A2925; background: transparent; color: #E8E4DA; font-family: inherit; font-size: 14px; cursor: pointer">← Seguir comprando</button>
-</div>
-
-<aside style="flex: 1 1 340px; min-width: 0; border: 2px solid #E8E4DA; padding: 24px; display: flex; flex-direction: column; gap: 14px">
-<h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 28px; text-transform: uppercase">Resumen del pedido</h2>
-<sc-for list="{{lines}}" as="ln" hint-placeholder-count="8">
-<div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px; line-height: 1.4">
-<span style="color: #C9C4B8">{{ln.label}}</span>
-<span style="white-space: nowrap">{{ln.amount}}</span>
-</div>
-</sc-for>
-<div style="border-top: 1px dashed #2A2925; padding-top: 14px; display: flex; justify-content: space-between; align-items: baseline">
-<span style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px">Total</span>
-<span style="font-family: Anton, Impact, sans-serif; font-size: 48px; color: #FF5A1F">$100.00</span>
-</div>
-<button type="button" onClick="{{pay}}" style="min-height: 56px; border: none; background: #FF5A1F; color: #0B0B0A; font-family: inherit; font-size: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer">Pagar ahora</button>
-<sc-if value="{{paid}}" hint-placeholder-val="{{ false }}">
-<p role="status" style="margin: 0; font-size: 14px; line-height: 1.6; color: #C6FF3D">Para pagar, búscate a Orbe C Films en persona. Aceptamos efectivo, pupusas y favores.</p>
-</sc-if>
-<p style="margin: 0; font-size: 11px; color: #8F8A7E">Esto es una broma entre amigos. Aquí no se cobra nada.</p>
-</aside>
+  <aside>
+    <h2 class="display">Resumen del pedido</h2>
+    <div id="lines" style="display:flex;flex-direction:column;gap:14px"></div>
+    <div class="total">
+      <span class="lbl">Total</span>
+      <span class="amt display" id="total">$100.00</span>
+    </div>
+    <button type="button" class="pay-btn" id="payBtn">Pagar ahora</button>
+    <p class="paid" id="paidMsg" role="status" hidden>Para pagar, búscate a Orbe C Films en persona. Aceptamos efectivo, pupusas y favores.</p>
+    <p class="fine">Esto es una broma entre amigos. Aquí no se cobra nada.</p>
+  </aside>
 </main>
-</sc-if>
 
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
-class Component extends DCLogic {
-constructor(props) {
-super(props);
-this.state = { inCart: false, paid: false, secs: 299, viewers: 37, extras: { seguro: true, risa: true } };
-}
-componentDidMount() {
-this.iv = setInterval(() => {
-this.setState((s) => ({ secs: s.secs > 0 ? s.secs - 1 : 299, viewers: 30 + Math.floor(Math.random() * 20) }));
-}, 1000);
-}
-componentWillUnmount() {
-clearInterval(this.iv);
-}
-renderVals() {
-const s = this.state;
-const money = (n) => (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
-const extraDefs = [
-{ id: 'seguro', label: 'Seguro anti-flop', price: 14.00 },
-{ id: 'risa', label: 'Que el director no se ría en el set', price: 16.00 }
-];
-const extras = extraDefs.map((e) => ({
-label: e.label,
-checked: s.extras[e.id],
-priceText: '+' + money(e.price),
-toggle: () => this.setState((st) => ({ extras: { ...st.extras, [e.id]: !st.extras[e.id] } }))
-}));
-const lines = [
-{ label: 'Video musical', amount: money(0) },
-{ label: 'Tarifa de servicio', amount: money(12.50) },
-{ label: 'Cargo por renderizado en 4K', amount: money(18.00) },
-{ label: 'Impuesto de luces y cámara', amount: money(9.75) },
-{ label: 'Envío del video (es digital)', amount: money(7.99) },
-{ label: 'Cuota de creatividad', amount: money(15.00) },
-{ label: 'Manejo del archivo .mp4', amount: money(6.76) }
-];
-extraDefs.forEach((e) => {
-if (s.extras[e.id]) lines.push({ label: e.label, amount: money(e.price) });
-else lines.push({ label: 'Cargo por quitar «' + e.label + '»', amount: money(e.price) });
-});
-lines.push({ label: 'Descuento aplicado', amount: '-$0.00' });
-const m = Math.floor(s.secs / 60);
-const sec = s.secs % 60;
-return {
-timer: '0' + m + ':' + (sec < 10 ? '0' : '') + sec,
-viewers: s.viewers,
-showProduct: !s.inCart,
-inCart: s.inCart,
-paid: s.paid,
-cartCount: s.inCart ? 1 : 0,
-extras: extras,
-lines: lines,
-add: () => this.setState({ inCart: true }),
-goCart: () => this.setState({ inCart: true }),
-back: () => this.setState({ inCart: false, paid: false }),
-pay: () => this.setState({ paid: true })
-};
-}
-}
+<script>
+  const money = n => (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
+
+  // Cargos "obligatorios" (suman $70)
+  const fees = [
+    ['Video musical', 0],
+    ['Tarifa de servicio', 12.50],
+    ['Cargo por renderizado en 4K', 18.00],
+    ['Impuesto de luces y cámara', 9.75],
+    ['Envío del video (es digital)', 7.99],
+    ['Cuota de creatividad', 15.00],
+    ['Manejo del archivo .mp4', 6.76],
+  ];
+
+  // Extras ya marcados (suman $30). Si los quitas, cobra lo mismo por quitarlos.
+  const extras = [
+    { id: 'seguro', label: 'Seguro anti-flop', price: 14.00, on: true },
+    { id: 'risa', label: 'Que el director no se ría en el set', price: 16.00, on: true },
+  ];
+
+  const $ = id => document.getElementById(id);
+
+  function renderExtras() {
+    $('extrasList').innerHTML = '';
+    extras.forEach(e => {
+      const label = document.createElement('label');
+      label.className = 'extra';
+      label.innerHTML = `<input type="checkbox" ${e.on ? 'checked' : ''}><span>${e.label}</span><span class="x">+${money(e.price)}</span>`;
+      label.querySelector('input').addEventListener('change', ev => { e.on = ev.target.checked; renderLines(); });
+      $('extrasList').appendChild(label);
+    });
+  }
+
+  function renderLines() {
+    const rows = fees.map(([l, p]) => [l, p]);
+    extras.forEach(e => rows.push([e.on ? e.label : `Cargo por quitar «${e.label}»`, e.price]));
+    rows.push(['Descuento aplicado', -0]);
+    const total = rows.reduce((s, [, p]) => s + p, 0);
+    $('lines').innerHTML = rows.map(([l, p]) =>
+      `<div class="line"><span>${l}</span><span>${l === 'Descuento aplicado' ? '-$0.00' : money(p)}</span></div>`
+    ).join('');
+    $('total').textContent = money(total);
+  }
+
+  function showCart(on) {
+    $('productView').hidden = on;
+    $('cartView').hidden = !on;
+    $('cartCount').textContent = on ? 1 : 0;
+    if (!on) $('paidMsg').hidden = true;
+    window.scrollTo(0, 0);
+  }
+
+  $('addBtn').addEventListener('click', () => showCart(true));
+  $('cartBtn').addEventListener('click', () => showCart(true));
+  $('backBtn').addEventListener('click', () => showCart(false));
+  $('payBtn').addEventListener('click', () => { $('paidMsg').hidden = false; });
+
+  // Cuenta regresiva falsa y "personas viendo"
+  let secs = 299;
+  setInterval(() => {
+    secs = secs > 0 ? secs - 1 : 299;
+    $('timer').textContent = String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0');
+    $('viewers').textContent = 30 + Math.floor(Math.random() * 20);
+  }, 1000);
+
+  renderExtras();
+  renderLines();
 </script>
 </body>
 </html>
-
